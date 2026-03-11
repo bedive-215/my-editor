@@ -4,6 +4,7 @@ import { Slate, Editable, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import renderElement from './renderElement';
 import renderLeaf from './renderLeaf';
+import Toolbar from '../components/Toolbar';
 
 const initialValue: Descendant[] = [
   {
@@ -16,7 +17,7 @@ export default function SlateEditor() {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   const [value, setValue] = useState<Descendant[]>(initialValue);
-
+  console.log("value: ", value)
   const renderElementCallback = useCallback(renderElement, []);
   const renderLeafCallback = useCallback(renderLeaf, []);
 
@@ -38,6 +39,7 @@ export default function SlateEditor() {
           spellCheck
           autoFocus
         />
+        <Toolbar value={value} setValue={setValue} />       
       </Slate>
     </div>
   );
