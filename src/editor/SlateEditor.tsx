@@ -9,7 +9,7 @@ import Toolbar from '../components/Toolbar';
 const initialValue: Descendant[] = [
   {
     type: 'paragraph',
-    children: [{ text: 'Hello Slate 👋' }],
+    children: [{ text: 'Hello Slate 👋' }, {text: 'write something.'}],
   },
 ];
 

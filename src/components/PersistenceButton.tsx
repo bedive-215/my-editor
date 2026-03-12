@@ -1,36 +1,33 @@
 import { Descendant } from "slate";
 import { useSlate } from "slate-react";
+import { save } from "../features/persistence/storage";
+import { load } from "../features/persistence/load";
 
 type Props = {
   value: Descendant[];
   setValue: (value: Descendant[]) => void;
 };
 
-const STORAGE_KEY = "slate-content";
-
 export default function PersistenceButtons({ value, setValue }: Props) {
   const editor = useSlate();
 
-  const save = () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+  const handleSave = () => {
+    save(value);
   };
 
-    const load = () => {
-        const data = localStorage.getItem(STORAGE_KEY);
-        if (!data) return;
+  const handleLoad = () => {
+    const parsed = load(editor);
+    if (!parsed) return;
 
-        const parsed = JSON.parse(data);
-
-        editor.children = parsed;
-        editor.onChange();
-
-        setValue(parsed);
-    };
+    editor.children = parsed;
+    editor.onChange();
+    setValue(parsed);
+  };
 
   return (
     <>
-      <button onClick={save}>Save</button>
-      <button onClick={load}>Load</button>
+      <button onClick={handleSave}>Save</button>
+      <button onClick={handleLoad}>Load</button>
     </>
   );
 }
