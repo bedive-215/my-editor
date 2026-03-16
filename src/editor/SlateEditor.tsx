@@ -2,9 +2,9 @@ import { useCallback, useMemo, useState } from 'react';
 import { createEditor, Descendant } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
-import renderElement from './renderElement';
+import {renderElement} from './renderElement';
 import renderLeaf from './renderLeaf';
-import Toolbar from '../components/Toolbar';
+import EditToolbar from '../components/EditToolbar';
 
 const initialValue: Descendant[] = [
   {
@@ -22,25 +22,43 @@ export default function SlateEditor() {
   const renderLeafCallback = useCallback(renderLeaf, []);
 
   return (
+    
     <div
-      style={{
-        maxWidth: 700,
-        minWidth: 300,
-        margin: '40px auto',
-        background: '#f0f0f0',
-        padding: 20,
-      }}
-    >
-      <Slate editor={editor} initialValue={value} onChange={setValue}>
-        <Editable
-          renderElement={renderElementCallback}
-          renderLeaf={renderLeafCallback}
-          placeholder='Type something...'
-          spellCheck
-          autoFocus
-        />
-        <Toolbar value={value} setValue={setValue} />       
-      </Slate>
-    </div>
+  style={{
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 40
+  }}
+>
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 700,
+      background: "white",
+      padding: 20,
+      borderRadius: 4,
+      boxShadow: "0 1px 3px rgba(0,0,0,.2)"
+    }}
+  >
+    <Slate editor={editor} initialValue={value} onChange={setValue}>
+      <EditToolbar value={value} setValue={setValue} />
+
+      <Editable
+        renderElement={renderElementCallback}
+        renderLeaf={renderLeafCallback}
+        placeholder="Type something..."
+        spellCheck
+        autoFocus
+        style={{
+          minHeight: 150,
+          outline: "none"
+        }}
+      />
+    </Slate>
+  </div>
+</div>
+
+    
   );
 }

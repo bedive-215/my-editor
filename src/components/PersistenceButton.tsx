@@ -2,6 +2,8 @@ import { Descendant } from "slate";
 import { useSlate } from "slate-react";
 import { save } from "../features/persistence/storage";
 import { load } from "../features/persistence/load";
+import { Button, Icon } from "./index";
+import { PointerEvent } from 'react'
 
 type Props = {
   value: Descendant[];
@@ -26,8 +28,16 @@ export default function PersistenceButtons({ value, setValue }: Props) {
 
   return (
     <>
-      <button onClick={handleSave}>Save</button>
-      <button onClick={handleLoad}>Load</button>
+      <Button onClick={handleSave} 
+        onPointerDown={(event: PointerEvent<HTMLButtonElement>) =>
+          event.preventDefault()
+        }><Icon>save</Icon>
+      </Button>
+      <Button onClick={handleLoad}  
+        onPointerDown={(event: PointerEvent<HTMLButtonElement>) =>
+              event.preventDefault()
+        }><Icon>folder_open</Icon>
+      </Button>
     </>
   );
 }
