@@ -2,7 +2,7 @@ import { RenderLeafProps } from 'slate-react';
 
 export default function renderLeaf(props: RenderLeafProps) {
   const { attributes, children, leaf } = props;
-  console.log('Props render leaf: ',props);
+  // console.log('Props render leaf: ',props);
   let el = children;
 
   if (leaf.bold) {

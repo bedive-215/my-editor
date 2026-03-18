@@ -1,0 +1,32 @@
+import { Editor, Transforms } from 'slate'
+import { TableElement } from '../../editor/custom-type'
+
+// tableUtils.ts
+
+export const createTable = (rows: number, cols: number): TableElement => {
+  return {
+    type: 'table',
+    children: Array.from({ length: rows }).map(() => ({
+      type: 'table-row',
+      children: Array.from({ length: cols }).map(() => ({
+        type: 'table-cell',
+        children: [
+          {
+            type: 'paragraph',
+            children: [{ text: '' }],
+          },
+        ],
+      })),
+    })),
+  }
+}
+
+export const insertTable = (editor: Editor, rows = 2, cols = 2) => {
+    const table = createTable(rows, cols)
+
+    Transforms.splitNodes(editor, {
+        always: true,
+    })
+
+    Transforms.insertNodes(editor, table)
+}

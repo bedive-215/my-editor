@@ -1,6 +1,6 @@
-import { BaseEditor } from "slate"
-import { ReactEditor } from "slate-react"
-import { HistoryEditor } from "slate-history"
+import { BaseEditor } from 'slate'
+import { ReactEditor } from 'slate-react'
+import { HistoryEditor } from 'slate-history'
 
 export type CustomText = {
   text: string
@@ -10,43 +10,73 @@ export type CustomText = {
   code?: boolean
 }
 
-export type CustomTextKey = keyof Omit<CustomText, "text">
+export type AlignType = 'left' | 'center' | 'right' | 'justify'
+
+type BaseElement = {
+  align?: AlignType
+}
+
+type ParagraphElement = BaseElement & {
+  type: 'paragraph'
+  children: CustomText[]
+}
+
+type HeadingElement = BaseElement & {
+  type: 'heading-one' | 'heading-two' | 'heading-three'
+  children: CustomText[]
+}
+
+type BlockQuoteElement = BaseElement & {
+  type: 'block-quote'
+  children: CustomText[]
+}
+
+type ListItemElement = BaseElement & {
+  type: 'list-item'
+  children: ParagraphElement[]
+}
+
+type ListElement = BaseElement & {
+  type: 'bulleted-list' | 'numbered-list'
+  children: ListItemElement[]
+}
+
+type TableCellElement = BaseElement & {
+  type: 'table-cell'
+  children: CustomElement[]
+}
+
+type TableRowElement = BaseElement & {
+  type: 'table-row'
+  children: TableCellElement[]
+}
+
+export type TableElement = BaseElement & {
+  type: 'table'
+  children: TableRowElement[]
+}
 
 export type CustomElement =
-  | { type: "paragraph"; align?: "left" | "center" | "right" | "justify"; children: CustomText[] }
-  | { type: "heading-one"; align?: "left" | "center" | "right" | "justify"; children: CustomText[] }
-  | { type: "heading-two"; align?: "left" | "center" | "right" | "justify"; children: CustomText[] }
-  | { type: "heading-three"; align?: "left" | "center" | "right" | "justify"; children: CustomText[] }
-  | { type: "block-quote"; align?: "left" | "center" | "right" | "justify"; children: CustomText[] }
-  | { type: "bulleted-list"; align?: "left" | "center" | "right" | "justify"; children: CustomElement[] }
-  | { type: "numbered-list"; align?: "left" | "center" | "right" | "justify"; children: CustomElement[] }
-  | { type: "list-item"; align?: "left" | "center" | "right" | "justify"; children: CustomText[] }
+  | ParagraphElement
+  | HeadingElement
+  | BlockQuoteElement
+  | ListElement
+  | ListItemElement
+  | TableElement
+  | TableRowElement
+  | TableCellElement
 
+export type CustomBlockType = CustomElement['type']
 
-export type CustomBlockType =
-  | "paragraph"
-  | "heading-one"
-  | "heading-two"
-  | "heading-three"
-  | "block-quote"
-  | "bulleted-list"
-  | "numbered-list"
-  | "list-item"
+export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor
 
-export type AlignType =
-  | "left"
-  | "center"
-  | "right"
-  | "justify"
+export const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'] as const
+export const LIST_TYPES: CustomBlockType[] = [
+  'numbered-list',
+  'bulleted-list',
+]
 
-export const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"] as const
-export const LIST_TYPES: CustomBlockType[] = ["numbered-list", "bulleted-list"] as const
-
-
-export type CustomEditor =
-  BaseEditor & ReactEditor & HistoryEditor
-
-declare module "slate" {
+declare module 'slate' {
   interface CustomTypes {
     Editor: CustomEditor
     Element: CustomElement

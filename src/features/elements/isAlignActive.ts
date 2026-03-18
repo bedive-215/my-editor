@@ -10,7 +10,7 @@ export const isAlignActive = (
     match: n =>
       !Editor.isEditor(n) &&
       SlateElement.isElement(n) &&
-      n.align === format
+      n.align === format as AlignType
   })
 
   return !!match

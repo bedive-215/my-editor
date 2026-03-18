@@ -2,6 +2,7 @@ import { Descendant } from "slate";
 import PersistenceButtons from "./PersistenceButton";
 import { MarkButton } from "./MarkButton";
 import { BlockButton } from "./BlockButton"
+import { TableButton } from "./TableButton";
 import { Toolbar } from "./index"
 type Props = {
   value: Descendant[];
@@ -26,6 +27,7 @@ const EditToolbar = ({ value, setValue }: Props) => {
       <BlockButton format="right" icon="format_align_right" />
       <BlockButton format="justify" icon="format_align_justify" />
       <PersistenceButtons value={value} setValue={setValue} />
+      <TableButton />
     </Toolbar>
   );
 };
