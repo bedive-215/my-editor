@@ -1,5 +1,5 @@
 import { useSlate } from 'slate-react'
-import { CustomTextKey } from '../editor/custom-type'
+import { CustomTextKey } from '../types/custom-type'
 import { isMarkActive } from '../features/formatting/isMarkActive'
 import { toggleMark } from '../features/formatting/toggleMark'
 import { PointerEvent } from 'react'

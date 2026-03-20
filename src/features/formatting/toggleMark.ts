@@ -1,4 +1,4 @@
-import { CustomEditor, CustomTextKey } from "../../editor/custom-type"
+import { CustomEditor, CustomTextKey } from "../../types/custom-type"
 import { isMarkActive } from "./isMarkActive"
 import { Editor } from "slate"
 

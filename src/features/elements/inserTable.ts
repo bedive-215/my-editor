@@ -1,7 +1,5 @@
 import { Editor, Transforms } from 'slate'
-import { TableElement } from '../../editor/custom-type'
-
-// tableUtils.ts
+import { TableElement } from '../../types/custom-type'
 
 export const createTable = (rows: number, cols: number): TableElement => {
   return {

@@ -1,5 +1,5 @@
 import { Editor, Element as SlateElement } from "slate"
-import { AlignType } from "../../editor/custom-type"
+import { AlignType } from "../../types/custom-type"
 
 export const isAlignActive = (
   editor: Editor,

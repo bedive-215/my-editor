@@ -2,7 +2,7 @@ import { useSlate } from "slate-react"
 import { toggleBlock } from "../features/elements/toggleBlock"
 import { isBlockActive } from "../features/elements/isBlockActive"
 import { isAlignActive } from "../features/elements/isAlignActive"
-import { CustomBlockType, AlignType, TEXT_ALIGN_TYPES } from "../editor/custom-type"
+import { CustomBlockType, AlignType, TEXT_ALIGN_TYPES } from "../types/custom-type"
 import { PointerEvent } from "react"
 import { Button, Icon } from "./index"
 

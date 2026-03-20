@@ -1,5 +1,5 @@
-import { Editor, Transforms, Element as SlateElement, Node } from "slate"
-import { CustomBlockType, AlignType, TEXT_ALIGN_TYPES, LIST_TYPES } from "../../editor/custom-type"
+import { Editor, Transforms, Element as SlateElement } from "slate"
+import { CustomBlockType, AlignType, TEXT_ALIGN_TYPES, LIST_TYPES } from "../../types/custom-type"
 import { isBlockActive } from "./isBlockActive"
 import { isAlignActive } from "./isAlignActive"
 
@@ -11,43 +11,117 @@ export const toggleBlock = (
   const isAlign = TEXT_ALIGN_TYPES.includes(format as AlignType)
   const isList = LIST_TYPES.includes(format as CustomBlockType)
 
-  const isActive = isAlign
-    ? isAlignActive(editor, format as AlignType)
-    : isBlockActive(editor, format as CustomBlockType)
-
-  if (!isAlign) {
-    Transforms.unwrapNodes(editor, {
-      match: n =>
-        Node.isElement(n) &&
-        LIST_TYPES.includes((n as SlateElement).type as CustomBlockType),
-      split: true,
-    })
-  }
-
-  let newProperties: Partial<SlateElement> = {}
-
+  // Toggle Align
   if (isAlign) {
-    newProperties.align = isActive ? undefined : (format as AlignType)
-  }
+    const align = format as AlignType
+    const active = isAlignActive(editor, align)
 
-  if (!isAlign) {
-    newProperties.type = isActive
-      ? "paragraph"
-      : isList
-      ? "list-item"
-      : (format as CustomBlockType)
-  }
-
-  Transforms.setNodes(editor, newProperties, {
-    match: n => !Editor.isEditor(n) && SlateElement.isElement(n),
-  })
-
-  if (!isAlign && !isActive && isList) {
-    const block: SlateElement = {
-      type: format as CustomBlockType,
-      children: [],
+    for (const [, path] of Editor.nodes(editor, {
+      match: n =>
+        SlateElement.isElement(n) &&
+        Editor.isBlock(editor, n) &&
+        n.type !== "table" &&
+        n.type !== "table-row",
+    })) {
+      Transforms.setNodes(
+        editor,
+        { align: active ? undefined : align },
+        { at: path }
+      )
     }
 
-    Transforms.wrapNodes(editor, block)
+    return
+  }
+
+  // Toggle List-item
+  if (isList) {
+    const list = format as CustomBlockType;
+
+    const listEntry = Editor.above(editor, {
+      match: n =>
+        SlateElement.isElement(n) &&
+        LIST_TYPES.includes(n.type as CustomBlockType),
+    })
+
+    const isActive =
+      !!listEntry &&
+      SlateElement.isElement(listEntry[0]) &&
+      listEntry[0].type === list
+
+    if (isActive) {
+      const listEntry = Editor.above(editor, {
+        match: n =>
+          SlateElement.isElement(n) &&
+          LIST_TYPES.includes(n.type as CustomBlockType),
+      })
+
+      if (!listEntry) return
+
+      const [listNode, listPath] = listEntry
+
+      Transforms.unwrapNodes(editor, {
+        at: listPath,
+        match: n =>
+          SlateElement.isElement(n) && n.type === "list-item",
+        split: true,
+      })
+
+      Transforms.unwrapNodes(editor, {
+        at: listPath,
+        match: n =>
+          SlateElement.isElement(n) &&
+          LIST_TYPES.includes(n.type as CustomBlockType),
+        split: true,
+      })
+      return
+    }
+
+    if (listEntry) {
+      const [, path] = listEntry
+
+      Transforms.setNodes(
+        editor,
+        { type: list },
+        { at: path }
+      )
+
+      return
+    }
+
+    Transforms.unwrapNodes(editor, {
+      match: n =>
+        SlateElement.isElement(n) &&
+        LIST_TYPES.includes(n.type as CustomBlockType),
+      split: true,
+    })
+
+    Transforms.wrapNodes(
+      editor,
+      {
+        type: "list-item",
+        children: [],
+      },
+      {
+        match: n =>
+          SlateElement.isElement(n) &&
+          n.type === "paragraph",
+      }
+    )
+
+    Transforms.wrapNodes(
+      editor,
+      {
+        type: list,
+        children: [],
+      },
+      {
+        match: n =>
+          SlateElement.isElement(n) &&
+          n.type === "list-item",
+        split: true,
+      }
+    )
+
+    return
   }
 }

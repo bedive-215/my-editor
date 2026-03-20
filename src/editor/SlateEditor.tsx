@@ -3,8 +3,9 @@ import { createEditor, Descendant } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import {renderElement} from './renderElement';
-import renderLeaf from './renderLeaf';
+import {renderLeaf} from './renderLeaf';
 import EditToolbar from '../components/EditToolbar';
+import { withList } from '../plugins/withList';
 
 const initialValue: Descendant[] = [
   {
@@ -14,7 +15,7 @@ const initialValue: Descendant[] = [
 ];
 
 export default function SlateEditor() {
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(() => withList(withHistory(withReact(createEditor()))), []);
 
   const [value, setValue] = useState<Descendant[]>(initialValue);
   console.log("value: ", value)
