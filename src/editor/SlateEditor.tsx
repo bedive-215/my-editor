@@ -1,16 +1,20 @@
 import { useCallback, useMemo, useState } from 'react';
-import { createEditor, Descendant } from 'slate';
-import { Slate, Editable, withReact } from 'slate-react';
+import { createEditor, Descendant, Editor, Path, Point, Element as SlateElement, Transforms } from 'slate';
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { withHistory } from 'slate-history';
-import {renderElement} from './renderElement';
-import {renderLeaf} from './renderLeaf';
+import { renderElement } from './renderElement';
+import { renderLeaf } from './renderLeaf';
 import EditToolbar from '../components/EditToolbar';
 import { withList } from '../plugins/withList';
+import { tabList } from '../plugins/tabList';
+import { unTabList } from '../plugins/unTabList';
+import { handleBackspace } from '../plugins/backSpace';
+import { TableToolbar } from '../components/TableToolbar';
 
 const initialValue: Descendant[] = [
   {
     type: 'paragraph',
-    children: [{ text: 'Hello Slate 👋' }, {text: 'write something.'}],
+    children: [{ text: 'Hello Slate 👋' }, { text: 'write something.' }],
   },
 ];
 
@@ -22,44 +26,59 @@ export default function SlateEditor() {
   const renderElementCallback = useCallback(renderElement, []);
   const renderLeafCallback = useCallback(renderLeaf, []);
 
+  
+  const [dragPath, setDragPath] = useState<Path | null>(null);
+
   return (
-    
+
     <div
-  style={{
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    marginTop: 40
-  }}
->
-  <div
-    style={{
-      width: "100%",
-      maxWidth: 700,
-      background: "white",
-      padding: 20,
-      borderRadius: 4,
-      boxShadow: "0 1px 3px rgba(0,0,0,.2)"
-    }}
-  >
-    <Slate editor={editor} initialValue={value} onChange={setValue}>
-      <EditToolbar value={value} setValue={setValue} />
-
-      <Editable
-        renderElement={renderElementCallback}
-        renderLeaf={renderLeafCallback}
-        placeholder="Type something..."
-        spellCheck
-        autoFocus
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        marginTop: 40
+      }}
+    >
+      <div
         style={{
-          minHeight: 150,
-          outline: "none"
+          width: "100%",
+          maxWidth: 700,
+          background: "white",
+          padding: 20,
+          borderRadius: 4,
+          boxShadow: "0 1px 3px rgba(0,0,0,.2)",
         }}
-      />
-    </Slate>
-  </div>
-</div>
+      >
+        <Slate editor={editor} initialValue={value} onChange={setValue}>
+          <EditToolbar value={value} setValue={setValue} />
+          <Editable
+            renderElement={renderElementCallback}
+            renderLeaf={renderLeafCallback}
+            placeholder="Type something..."
+            spellCheck
+            autoFocus
+            style={{
+              minHeight: 150,
+              outline: "none"
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Backspace") {
+                handleBackspace(event, editor);
+              }
+              if (event.key === "Tab") {
+                event.preventDefault();
 
-    
+                if (event.shiftKey) {
+                  unTabList(editor);
+                } else {
+                  tabList(editor);
+                }
+              }
+            }}
+          />
+          <TableToolbar />
+        </Slate>
+      </div>
+    </div>
   );
 }

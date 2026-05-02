@@ -44,7 +44,7 @@ export const withList = (editor: Editor) => {
       return
     }
 
-    // 🧠 CASE 2: split list-item
+    // split list-item
     Transforms.splitNodes(editor, {
       match: n =>
         SlateElement.isElement(n) && n.type === "list-item",

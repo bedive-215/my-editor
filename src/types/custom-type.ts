@@ -36,17 +36,19 @@ type ListItemElement = BaseElement & {
   children: ParagraphElement[]
 }
 
-type ListElement = BaseElement & {
+export type ListElement = BaseElement & {
   type: 'bulleted-list' | 'numbered-list'
   children: ListItemElement[]
 }
 
-type TableCellElement = BaseElement & {
+export type TableCellElement = BaseElement & {
   type: 'table-cell'
+  width?: number
+  height?: number
   children: CustomElement[]
 }
 
-type TableRowElement = BaseElement & {
+export type TableRowElement = BaseElement & {
   type: 'table-row'
   children: TableCellElement[]
 }

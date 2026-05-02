@@ -21,10 +21,5 @@ export const createTable = (rows: number, cols: number): TableElement => {
 
 export const insertTable = (editor: Editor, rows = 2, cols = 2) => {
     const table = createTable(rows, cols)
-
-    Transforms.splitNodes(editor, {
-        always: true,
-    })
-
     Transforms.insertNodes(editor, table)
 }

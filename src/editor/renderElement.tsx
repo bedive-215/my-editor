@@ -1,52 +1,59 @@
-import { RenderElementProps } from "slate-react"
-import { Element as SlateElement } from "slate"
+import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from "slate-react";
+import { Editor, Element as SlateElement } from "slate";
+import { startResizeCol, startResizeRow } from "../features/elements/resizeTable";
 
 export const renderElement = (props: RenderElementProps) => {
-  const { attributes, children, element } = props
+  const { attributes, children, element } = props;
 
   const style = {
-    textAlign: SlateElement.isElement(element) ? element.align : undefined
-  }
+    textAlign: SlateElement.isElement(element)
+      ? (element as any).align
+      : undefined,
+  };
 
+  // const content = (() => {
   switch (element.type) {
-
     case "heading-one":
-      return <h1 style={style} {...attributes}>{children}</h1>
+      return <h1 style={style}>{children}</h1>;
 
     case "heading-two":
-      return <h2 style={style} {...attributes}>{children}</h2>
-
-    case "heading-three":
-      return <h3 style={style} {...attributes}>{children}</h3>
-
-    case "block-quote":
-      return <blockquote style={style} {...attributes}>{children}</blockquote>
-
-    case "bulleted-list":
-      return <ul style={style} {...attributes}>{children}</ul>
+      return <h2 style={style}>{children}</h2>;
 
     case "numbered-list":
-      return <ol style={style} {...attributes}>{children}</ol>
+      return <ol style={style}>{children}</ol>;
+
+    case "bulleted-list":
+      return <ul style={style}>{children}</ul>;
 
     case "list-item":
-      return <li style={style} {...attributes}>{children}</li>
+      return <li style={style}>{children}</li>;
+
     case "table":
       return (
-        <table style={{ borderCollapse: "collapse", width: "100%", margin: "10px 0",}}>
-          <tbody {...attributes}>{children}</tbody>
+        <table {...attributes} style={{ borderCollapse: "collapse", width: "auto", margin: "4px 0",}}>
+          <tbody>{children}</tbody>
         </table>
-      )
+      );
 
     case "table-row":
-      return <tr {...attributes}>{children}</tr>
+      return <tr>{children}</tr>;
 
-    case "table-cell":
+    case "table-cell": {
       return (
-        <td {...attributes} style={{ border: "1px solid #ccc", padding: "8px", minWidth: "50px"}}>
+        <td style={{ border: "1px solid #e5e5e5", padding: "4px 15px", minWidth: 60, fontSize: 13, lineHeight: 1.4 }}>
           {children}
         </td>
-      )
+      );
+    }
+
     default:
-      return <p style={style} {...attributes}>{children}</p>
+      return <p style={style}>{children}</p>;
   }
-}
+  // })();
+
+  // return (
+  //   <Block {...props}>
+  //     {content}
+  //   </Block>
+  // );
+};
